@@ -1,6 +1,5 @@
 package com.somegame;
 
-
 import com.somegame.core.TextUI;
 
 public class Main {
