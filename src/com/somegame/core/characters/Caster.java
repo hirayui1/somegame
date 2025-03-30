@@ -7,7 +7,7 @@ public class Caster extends Hero {
     }
 
     public void hit(Hero target) {
-        if (this.getHp() > 0) {
+        if (this.getHp() > 0) { // TODO: redundant? this is check is covered in super
             super.hit(target);
             selfHeal();
         }
