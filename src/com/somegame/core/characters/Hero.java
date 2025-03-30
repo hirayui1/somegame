@@ -2,6 +2,9 @@ package com.somegame.core.characters;
 
 import com.somegame.core.Inventory;
 import com.somegame.core.items.*;
+import com.somegame.core.items.equippable.Armor;
+import com.somegame.core.items.equippable.Equippable;
+import com.somegame.core.items.equippable.Weapon;
 import com.somegame.core.location.Location;
 import com.somegame.core.location.Map;
 

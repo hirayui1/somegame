@@ -1,4 +1,6 @@
-package com.somegame.core.items;
+package com.somegame.core.items.equippable;
+
+import com.somegame.core.items.Item;
 
 public class Armor extends Item implements Equippable{
     private int defence;
