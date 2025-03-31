@@ -10,9 +10,6 @@ import com.somegame.core.location.Map;
 
 public class Hero extends Character {
     private int experience; // xp cap = 125 * level
-    private String name;
-    private int hp;
-    private int damage;
     private Weapon weapon;
     private Armor armor;
     private final Inventory inventory;
@@ -33,7 +30,7 @@ public class Hero extends Character {
     }
 
     public Hero(String name) {
-        this(name, 15, 2, 1);
+        this(name, 15, 2);
     }
 
     @Override
@@ -154,30 +151,6 @@ public class Hero extends Character {
 
     public void setArmor(Armor armor) {
         this.armor = armor;
-    }
-
-    public int getHp() {
-        return hp;
-    }
-
-    public void setHp(int hp) {
-        this.hp = hp;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getDamage() {
-        return damage;
-    }
-
-    public void setDamage(int damage) {
-        this.damage = damage;
     }
 
     public Weapon getWeapon() {
