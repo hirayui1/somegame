@@ -1,4 +1,6 @@
-package com.somegame.core.characters;
+package com.somegame.core.characters.player;
+
+import com.somegame.core.characters.Hero;
 
 public class Caster extends Hero {
 

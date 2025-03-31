@@ -8,9 +8,8 @@ import com.somegame.core.items.equippable.Weapon;
 import com.somegame.core.location.Location;
 import com.somegame.core.location.Map;
 
-public class Hero {
+public class Hero extends Character {
     private int experience; // xp cap = 125 * level
-    private int level;
     private String name;
     private int hp;
     private int damage;
@@ -21,14 +20,12 @@ public class Hero {
     private final Map map;
 
     public Hero(String name, int hp, int damage, int level) {
+        super(name, hp, damage, level);
+
         inventory = new Inventory();
         map = new Map();
 
         this.experience = 0;
-        this.level = Math.min(level, 1);
-        this.name = name;
-        this.damage = damage;
-        this.hp = hp;
     }
 
     public Hero(String name, int hp, int damage) {
@@ -39,9 +36,9 @@ public class Hero {
         this(name, 15, 2, 1);
     }
 
-    public void hit(Hero target) {
+    public void hit(Character target) {
         if (this.hp > 0) {
-            target.hp = Math.max(target.getHp() - calculatedDamage(), 0);
+            target.setHp(Math.max(target.getHp() - calculatedDamage(), 0));
             System.out.println(this.getName() + " deals " + calculatedDamage() + " damage to " + target.getName() + ", leaving " + target.getHp() + " hp.");
 
             retaliate(target); // retaliate as long as alive regardless of holding a weapon or not
@@ -49,14 +46,14 @@ public class Hero {
         }
     }
 
-    public void onLastHit(Hero target) {
+    public void onLastHit(Character target) {
         if (target.getHp() == 0) {
             gainExperience(target);
             gainLoot();
         }
     }
 
-    private void gainExperience(Hero target) {
+    private void gainExperience(Character target) {
         setExperience(getExperience() + 25 * target.getLevel());
     }
 
@@ -78,8 +75,8 @@ public class Hero {
         return Math.max((damage + weaponDmg) - def, 0);
     }
 
-    public void retaliate(Hero target) {
-        if (target.hp > 0) {
+    public void retaliate(Character target) {
+        if (target.getHp() > 0) {
             this.hp = Math.max(this.getHp() - target.getDamage(), 0);
             System.out.println(target.getName() + " deals " + target.getDamage() + " damage back to " + this.getName() + ", leaving " + this.getHp() + " hp.");
         }
@@ -199,6 +196,7 @@ public class Hero {
     public int getLevel() {
         return level;
     }
+
     public Inventory getInventory() {
         return inventory;
     }
