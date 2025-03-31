@@ -14,9 +14,11 @@ public abstract class Character {
         this.level = Math.min(level, 1);
     }
 
-    protected abstract void hit(Character target);
+    protected abstract void hit(Character target); // should hit the target
 
-    protected abstract void retaliate(Character target);
+    protected abstract void retaliate(Character target); // should make the target hit you
+
+    protected abstract void takeDamage(int hpLoss); // should manipulate this.hp
 
     public String getName() {
         return name;

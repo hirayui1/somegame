@@ -36,14 +36,38 @@ public class Hero extends Character {
         this(name, 15, 2, 1);
     }
 
+    @Override
     public void hit(Character target) {
         if (this.hp > 0) {
-            target.setHp(Math.max(target.getHp() - calculatedDamage(), 0));
-            System.out.println(this.getName() + " deals " + calculatedDamage() + " damage to " + target.getName() + ", leaving " + target.getHp() + " hp.");
+            target.setHp(Math.max(target.getHp() - calculateDamage(), 0));
+            System.out.println(this.getName() + " deals " + calculateDamage() + " damage to " + target.getName() + ", leaving " + target.getHp() + " hp.");
 
             retaliate(target); // retaliate as long as alive regardless of holding a weapon or not
             onLastHit(target);
         }
+    }
+
+    @Override
+    public void retaliate(Character target) { // not calling target hit method on this class because that will make the combat autonomous
+        if (target.getHp() > 0) {
+            this.hp = Math.max(this.getHp() - target.getDamage(), 0);
+            System.out.println(target.getName() + " deals " + target.getDamage() + " damage back to " + this.getName() + ", leaving " + this.getHp() + " hp.");
+        }
+    }
+
+    @Override
+    public void takeDamage(int hpLoss) {
+        this.hp -= hpLoss; // not sure if this or .setHp();
+    }
+
+
+    private int calculateDamage() {
+        int weaponDmg = 0;
+
+        if (weapon != null) {
+            weaponDmg = weapon.getDamage();
+        }
+        return Math.max((damage + weaponDmg), 0);
     }
 
     public void onLastHit(Character target) {
@@ -59,27 +83,6 @@ public class Hero extends Character {
 
     private void gainLoot() {
         inventory.addGold(250);
-    }
-
-    private int calculatedDamage() {
-        int def = 0;
-        int weaponDmg = 0;
-
-        if (armor != null) {
-            def = armor.getDefence();
-        }
-
-        if (weapon != null) {
-            weaponDmg = weapon.getDamage();
-        }
-        return Math.max((damage + weaponDmg) - def, 0);
-    }
-
-    public void retaliate(Character target) {
-        if (target.getHp() > 0) {
-            this.hp = Math.max(this.getHp() - target.getDamage(), 0);
-            System.out.println(target.getName() + " deals " + target.getDamage() + " damage back to " + this.getName() + ", leaving " + this.getHp() + " hp.");
-        }
     }
 
     public void addItem(Item item) {
