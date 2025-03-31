@@ -5,7 +5,6 @@ import com.somegame.core.NPC.Vendor;
 import com.somegame.core.NPC.Weaponsmith;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class City extends Location {
     private final ArrayList<Vendor> vendors;
