@@ -12,44 +12,51 @@ public class TextUI {
     private Hero player;
     private Scanner scan;
     private ArrayList<Location> trackPlayer;
-    
+
     public void run() {
         scan = new Scanner(System.in);
         int input;
-
-        player = null;
         trackPlayer = new ArrayList<>();
 
         System.out.println("Enter any integer to start the game, or 0 to exit.");
         while ((input = Integer.parseInt(scan.nextLine())) != 0) {
-            if (player == null) {
-                player = createHeroPrompt();
-                player.setLocation(DataStore.createCityList());
-                player.getInventory().setGold(500);
-                System.out.println("Welcome, " + player.getName() + ".");
-                endPromptIfCity();
-            } else {
-                if (player.getLocation() instanceof City) { // if currently in city
-                    if (input == 1) { // TODO: could change this inner if for input variable to switch
-                        player.listInventory();
-                    } else if (input == 2) {
-                        System.out.println("Please choose a vendor to interact with");
-                        ((City) player.getLocation()).listVendors();
-                        int vendorIndex = Integer.parseInt(scan.nextLine());
-                        showVendorInventory(vendorIndex - 1);
-                        System.out.println("Please choose the item you want to buy");
-                        int itemIndex = Integer.parseInt(scan.nextLine());
-                        buyVendorItem(vendorIndex - 1, itemIndex - 1);
-                    } else if (input == 3) {
-                        City currentCity = (City)player.getLocation();
-                        playerMovementPattern(currentCity);
-                    }
+            try {
+                if (player == null) {
+                    player = createHeroPrompt();
+                    player.setLocation(DataStore.createCityList());
+                    player.getInventory().setGold(500);
+                    System.out.println("Welcome, " + player.getName() + ".");
                     endPromptIfCity();
-                } else { // if not currently in city
-                    endPrompt();
-                }
-            }
+                } else {
+                    if (player.getLocation() instanceof City) { // if currently in city
+                        if (input == 1) { // TODO: could change this if condition chain to a switch expression, and have default be the error prompt?
+                            player.listInventory();
+                        } else if (input == 2) {
+                            System.out.println("Please choose a vendor to interact with");
+                            City tempPlayerCity = ((City) player.getLocation());
+                            tempPlayerCity.listVendors();
+                            int vendorIndex;
+                            if ((vendorIndex = Integer.parseInt(scan.nextLine())) <= tempPlayerCity.getVendors().size() && vendorIndex >= 0) { // checks if the user chose one of the vendors
+                                showVendorInventory(vendorIndex - 1);
+                                System.out.println("Please choose the item you want to buy");
+                                int itemIndex = Integer.parseInt(scan.nextLine());
+                                buyVendorItem(vendorIndex - 1, itemIndex - 1);
+                            } else {
+                                System.out.println("Not a valid vendor choice, please try one of the presented vendors.");
+                            }
 
+                        } else if (input == 3) {
+                            City currentCity = (City) player.getLocation();
+                            playerMovementPattern(currentCity);
+                        }
+                        endPromptIfCity();
+                    } else { // if not currently in city
+                        endPrompt();
+                    }
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid INTEGER value corresponding to a given option.");
+            }
         }
     }
 
@@ -72,8 +79,8 @@ public class TextUI {
             }
             System.out.println(sb);
             if ((input = Integer.parseInt(scan.nextLine())) > 0 && input <= trackPlayer.size()) {
-                player.setLocation(trackPlayer.get(input-1));
-                trackPlayer.subList(input-1, trackPlayer.size()).clear();
+                player.setLocation(trackPlayer.get(input - 1));
+                trackPlayer.subList(input - 1, trackPlayer.size()).clear();
             } else {
                 System.out.println("Your choice was not one of the valid options.\nGoing back to the city...");
                 endPromptIfCity();
@@ -83,11 +90,11 @@ public class TextUI {
     }
 
     private void buyVendorItem(int vendorIndex, int itemIndex) {
-        ((City)player.getLocation()).getVendors().get(vendorIndex).trade(player, itemIndex);
+        ((City) player.getLocation()).getVendors().get(vendorIndex).trade(player, itemIndex);
     }
 
     private void showVendorInventory(int index) {
-        ((City)player.getLocation()).getVendors().get(index).getInventory().listInventory();
+        ((City) player.getLocation()).getVendors().get(index).getInventory().listInventory();
     }
 
     private void endPrompt() {
@@ -97,6 +104,7 @@ public class TextUI {
                 2. Move.
                 0. Exit.%n""", player.getLocation().getName());
     }
+
     private void endPromptIfCity() {
         System.out.printf("""
                 \nYou're at %s, make a choice!
