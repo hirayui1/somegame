@@ -1,5 +1,6 @@
 package com.somegame.core;
 
+import com.somegame.core.NPC.Vendor;
 import com.somegame.core.characters.Hero;
 import com.somegame.core.location.City;
 import com.somegame.core.manager.PlayerCreator;
@@ -105,8 +106,24 @@ public class TextUI {
     }
 
     private void buyVendorItem(int vendorIndex, int itemIndex) {
+        Vendor vendor = ((City) player.getLocation()).getVendors().get(vendorIndex);
         try {
-            ((City) player.getLocation()).getVendors().get(vendorIndex).trade(player, itemIndex);
+            if (!player.invIsFull()) {
+                vendor.trade(player, itemIndex);
+            } else {
+                System.out.println("""
+                        Your inventory is full. Choose:
+                        1. Choose an item to replace with your current purchase.
+                        0. Cancel.""");
+                int input = Integer.parseInt(scan.nextLine());
+                if (input == 1) {
+                    player.listInventory();
+                    input = Integer.parseInt(scan.nextLine());
+                    vendor.trade(player, itemIndex, input-1);
+                } else {
+                    System.out.println("Not a valid option.");
+                }
+            }
         } catch (NullPointerException e) { // might throw NPE if player chooses an empty slot
             System.out.println("The vendor does not have an item to offer in this slot.");
         }

@@ -20,7 +20,18 @@ public abstract class Vendor {
         if (playerGold >= targetItem.getPrice()) {
             player.getInventory().setGold(playerGold - targetItem.getPrice());
             player.addItem(targetItem);
+        } else {
+            System.out.println(targetItem.getName() + " is " + targetItem.getPrice() + " but you have " + playerGold + ". You do not have enough gold.");
+        }
+    }
 
+    public void trade(Hero player, int index, int replace) {
+        int playerGold = player.getInventory().getGold();
+        Item targetItem = this.getInventory().getSlot(index);
+
+        if (playerGold >= targetItem.getPrice()) {
+            player.getInventory().setGold(playerGold - targetItem.getPrice());
+            player.replaceWithItem(targetItem, replace);
         } else {
             System.out.println(targetItem.getName() + " is " + targetItem.getPrice() + " but you have " + playerGold + ". You do not have enough gold.");
         }

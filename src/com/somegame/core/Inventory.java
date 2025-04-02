@@ -47,6 +47,19 @@ public class Inventory {
         }
     }
 
+    public void replace(int replace, Item item) {
+        inventory.set(replace, item);
+    }
+
+    public boolean isFull() {
+        for (Item i : inventory) {
+            if (i == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void listInventory() {
         for (int i = 0, j = 8; i < 8; i++, j++) {
             String item1 = inventory.get(i) != null ? inventory.get(i).toString() : "-";

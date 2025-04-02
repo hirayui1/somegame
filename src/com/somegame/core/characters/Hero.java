@@ -85,12 +85,17 @@ public class Hero extends Character {
     public void addItem(Item item) {
         if (inventory.add(item)) {
             System.out.println(item.getName() + " has been added to the inventory");
+        } else {
+            System.out.println("Could not add the item to your inventory. H1");
         }
     }
-    public void addItem(Item item, int index) {
-        if (inventory.add(item, index)) {
-            System.out.println(item.getName() + " has been added to the inventory");
-        }
+    public void replaceWithItem(Item item, int index) {
+        inventory.replace(index, item);
+        System.out.println(item.getName() + " has been added to the inventory");
+    }
+
+    public boolean invIsFull() {
+        return inventory.isFull();
     }
 
     public void listInventory() {
