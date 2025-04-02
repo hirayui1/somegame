@@ -4,6 +4,7 @@ import com.somegame.core.characters.Hero;
 import com.somegame.core.location.City;
 import com.somegame.core.manager.PlayerCreator;
 
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class TextUI {
@@ -65,19 +66,23 @@ public class TextUI {
     }
 
     private void playerMovementPattern(City currentCity) {
-        if (tracker.size() > 0) {
+        if (tracker.size() == 0) {
             System.out.println("""
                     Which way do you want to move?
-                    1. Forward.
+                    1. Forward.""");
+        } else if (currentCity.getNext() == null) {
+            System.out.println("""
+                    Which way do you want to move?
                     2. Backward.""");
         } else {
             System.out.println("""
                     Which way do you want to move?
-                    1. Forward.""");
+                    1. Forward.
+                    2. Backward.""");
         }
 
         int input = Integer.parseInt(scan.nextLine());
-        if (input == 1) { // if forward
+        if (currentCity.getNext() != null && input == 1) { // if forward
             tracker.forwardUpdate(currentCity);
             player.setLocation(currentCity.getNext());
         } else if (tracker.size() > 0 && input == 2) { // if backward
