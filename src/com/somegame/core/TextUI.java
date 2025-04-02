@@ -4,7 +4,6 @@ import com.somegame.core.characters.Hero;
 import com.somegame.core.location.City;
 import com.somegame.core.manager.PlayerCreator;
 
-import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class TextUI {
@@ -61,6 +60,11 @@ public class TextUI {
                 }
             } catch (IllegalArgumentException e) {
                 System.out.println("Not a valid choice, please choose one of the given options.");
+                if (player.getLocation() instanceof City) {
+                    endPromptIfCity();
+                } else {
+                    endPrompt();
+                }
             }
         }
     }
@@ -101,7 +105,11 @@ public class TextUI {
     }
 
     private void buyVendorItem(int vendorIndex, int itemIndex) {
-        ((City) player.getLocation()).getVendors().get(vendorIndex).trade(player, itemIndex);
+        try {
+            ((City) player.getLocation()).getVendors().get(vendorIndex).trade(player, itemIndex);
+        } catch (NullPointerException e) { // might throw NPE if player chooses an empty slot
+            System.out.println("The vendor does not have an item to offer in this slot.");
+        }
     }
 
     private void showVendorInventory(int index) {
