@@ -2,31 +2,36 @@ package com.somegame.core;
 
 import com.somegame.core.characters.Hero;
 import com.somegame.core.location.City;
-import com.somegame.core.location.Location;
-import com.somegame.util.DataStore;
+import com.somegame.core.manager.PlayerCreator;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TextUI {
+    private static TextUI INSTANCE;
     private Hero player;
-    private Scanner scan;
-    private ArrayList<Location> trackPlayer;
+    private final Scanner scan;
+    private final PlayerTracker tracker;
+
+    private TextUI() {
+        scan = new Scanner(System.in);
+        tracker = PlayerTracker.getInstance();
+    } // singleton constructor
+
+    public static TextUI getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new TextUI();
+        }
+        return INSTANCE;
+    }
 
     public void run() {
-        scan = new Scanner(System.in);
         int input;
-        trackPlayer = new ArrayList<>();
 
         System.out.println("Enter any integer to start the game, or 0 to exit.");
         while ((input = Integer.parseInt(scan.nextLine())) != 0) {
             try {
                 if (player == null) {
-                    player = createHeroPrompt();
-                    player.setLocation(DataStore.createCityList());
-                    player.getInventory().setGold(500);
-                    System.out.println("Welcome, " + player.getName() + ".");
-                    endPromptIfCity();
+                    createHeroPrompt();
                 } else {
                     if (player.getLocation() instanceof City) { // if currently in city
                         if (input == 1) { // TODO: could change this if condition chain to a switch expression, and have default be the error prompt?
@@ -44,7 +49,6 @@ public class TextUI {
                             } else {
                                 System.out.println("Not a valid vendor choice, please try one of the presented vendors.");
                             }
-
                         } else if (input == 3) {
                             City currentCity = (City) player.getLocation();
                             playerMovementPattern(currentCity);
@@ -61,29 +65,30 @@ public class TextUI {
     }
 
     private void playerMovementPattern(City currentCity) {
-        System.out.println("""
-                Which way do you want to move?
-                1. Forward.
-                2. Backward.
-                """);
+        if (tracker.size() > 0) {
+            System.out.println("""
+                    Which way do you want to move?
+                    1. Forward.
+                    2. Backward.""");
+        } else {
+            System.out.println("""
+                    Which way do you want to move?
+                    1. Forward.""");
+        }
+
         int input = Integer.parseInt(scan.nextLine());
         if (input == 1) { // if forward
-            trackPlayer.add(currentCity);
+            tracker.forwardUpdate(currentCity);
             player.setLocation(currentCity.getNext());
-        } else if (input == 2) { // if backward
-            StringBuffer sb = new StringBuffer(); // to avoid flooding the java string pool
-            sb.append("Choose where you want to go:");
-            int i = 0;
-            for (Location l : trackPlayer) {
-                sb.append("\n").append((++i)).append(". ").append(l.getName()); // create a string of numerated list of cities
-            }
-            System.out.println(sb);
-            if ((input = Integer.parseInt(scan.nextLine())) > 0 && input <= trackPlayer.size()) {
-                player.setLocation(trackPlayer.get(input - 1));
-                trackPlayer.subList(input - 1, trackPlayer.size()).clear();
-            } else {
+        } else if (tracker.size() > 0 && input == 2) { // if backward
+            System.out.println();
+            try {
+                tracker.buildNumeratedListString("Choose where you want to go:");
+                input = Integer.parseInt(scan.nextLine());
+                player.setLocation(tracker.get(input - 1));
+                tracker.backwardUpdate(input - 1); // update the list to be (0, n-1)
+            } catch (IllegalArgumentException e) {
                 System.out.println("Your choice was not one of the valid options.\nGoing back to the city...");
-                endPromptIfCity();
             }
         }
 
@@ -114,19 +119,17 @@ public class TextUI {
                 0. Exit.%n""", player.getLocation().getName());
     }
 
-    private Hero createHeroPrompt() {
-
+    private void createHeroPrompt() {
         System.out.println("""
                 \nYou do not have a character saved. Create a new character?
                 1. Create your character.
                 0. Exit.""");
         if (Integer.parseInt(scan.nextLine()) == 1) {
-            System.out.println("\nEnter your character's name.");
-            String name = scan.nextLine();
-            return new Hero(name);
+            player = PlayerCreator.createPlayer(scan);
+            System.out.println("Welcome, " + player.getName() + ".");
+            endPromptIfCity();
+        } else {
+            System.exit(0);
         }
-
-        System.exit(0);
-        return null;
     }
 }

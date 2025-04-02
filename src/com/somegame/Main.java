@@ -4,7 +4,7 @@ import com.somegame.core.TextUI;
 
 public class Main {
     public static void main(String[] args) {
-        TextUI ui = new TextUI();
+        TextUI ui = TextUI.getInstance();
 
         ui.run();
     }
