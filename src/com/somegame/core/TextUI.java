@@ -58,8 +58,8 @@ public class TextUI {
                         endPrompt();
                     }
                 }
-            } catch (NumberFormatException e) {
-                System.out.println("Please enter a valid INTEGER value corresponding to a given option.");
+            } catch (IllegalArgumentException e) {
+                System.out.println("Not a valid choice, please choose one of the given options.");
             }
         }
     }
@@ -81,7 +81,6 @@ public class TextUI {
             tracker.forwardUpdate(currentCity);
             player.setLocation(currentCity.getNext());
         } else if (tracker.size() > 0 && input == 2) { // if backward
-            System.out.println();
             try {
                 tracker.buildNumeratedListString("Choose where you want to go:");
                 input = Integer.parseInt(scan.nextLine());
@@ -90,6 +89,8 @@ public class TextUI {
             } catch (IllegalArgumentException e) {
                 System.out.println("Your choice was not one of the valid options.\nGoing back to the city...");
             }
+        } else {
+            throw new IllegalArgumentException();
         }
 
     }
