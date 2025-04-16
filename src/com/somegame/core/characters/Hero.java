@@ -104,8 +104,7 @@ public class Hero extends Character {
     }
 
     public void useFromInventory(int index) {
-        if (inventory.getSlot(index) instanceof Consumable) { // damage elixir -> +5 damage
-            Consumable temp = ((Consumable) inventory.getSlot(index));
+        if (inventory.getSlot(index) instanceof Consumable temp) { // damage elixir -> +5 damage
             if (temp.getQuantity() > 0) {
                 int qty = temp.getQuantity();
                 setDamage(getDamage() + temp.getStat());
