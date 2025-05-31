@@ -11,7 +11,4 @@ public class DataStore {
 
         return starter; // return starter city
     }
-
-    public static void createLinkedCityList() { // botched idea
-    }
 }

@@ -149,6 +149,18 @@ public class Hero extends Character {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Hero{\n" +
+                "experience=" + experience +
+                ",\n weapon=" + (weapon == null ? "null" : weapon.toString()) +
+                ",\n armor=" + (armor == null ? "null" : armor.toString()) +
+                ",\n inventory=" + (inventory == null ? "null" : inventory.inventoryPatternForGameState()) +
+                ",\n location=" + (location == null ? "null" : location.getName()) +
+                ",\n map=" + map +
+                "\n}";
+    }
+
     public Armor getArmor() {
         return armor;
     }

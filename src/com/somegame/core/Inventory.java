@@ -69,6 +69,20 @@ public class Inventory {
         }
     }
 
+    public String inventoryPatternForGameState() {
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+        for (Item i : inventory) {
+            if (i == null) {
+                break;
+            }
+            sb.append(count).append(".").append(i.getName()).append(",");
+        }
+
+        sb.deleteCharAt(sb.length()-1); // delete last "," to indicate list ends, avoiding empty element at .split()
+        return sb.toString();
+    }
+
     private void fillInventoryWithInitialNulls() {
         for (int i = 0; i < 16; i++) {
             inventory.add(null);

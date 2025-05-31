@@ -25,6 +25,10 @@ public class TextUI {
         return INSTANCE;
     }
 
+    public Hero getPlayer() {
+        return player;
+    }
+
     public void run() {
         int input;
 
